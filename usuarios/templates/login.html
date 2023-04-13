@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Type.Event | Login{% endblock  %}
+
+{% block 'body' %}
+    <div class="container-fluid bg-inscricao">
+        
+        <div class="row">
+            <div class="col-md">
+                <h3 class="logo">Type.Event</h3>
+
+                <div class="box-form">
+                    <h3>LOGIN</h3>
+                    <hr style="border-color: #7E7B7C">
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form action="{% url 'login' %}" method="POST"> {% csrf_token %}
+                        <label>Username ou e-mail:</label>
+                        <input type="text" class="form-control" placeholder="" name="username" required>
+                        <br>
+                        <label>Senha:</label>
+                        <input type="password" class="form-control" placeholder="" name="senha" required>
+                        <br>
+                        <a href="{% url 'cadastro' %}" class="link">Cadastre-se</a>
+                        <br>
+                        <br>
+                        <input type="submit" value="LOGIN" class="btn-principal">
+                    </form>
+                </div>
+            </div>
+            <div class="col-md bg-img"></div>
+        </div>
+    </div>
+{% endblock %}

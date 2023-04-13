@@ -1,4 +1,4 @@
-from django.contrib import messages
+from django.contrib import auth, messages
 from django.contrib.auth.models import User
 from django.contrib.messages import constants
 from django.shortcuts import redirect, render
@@ -60,4 +60,44 @@ def cadastro(request):
             )
             return redirect(to='cadastro')
     else:
+        if request.user.is_authenticated:
+            return redirect(to='novo_evento')
+
         return render(request, 'cadastro.html')
+
+
+def login(request):
+    if request.method == 'POST':
+        userinput = request.POST.get('username')
+        senha = request.POST.get('senha')
+
+        # login com username ou e-mail:
+        try:
+            user = User.objects.get(email=userinput)
+            account = auth.authenticate(
+                request, username=user.username, password=senha)
+
+            if not account:
+                messages.error(
+                    request, message='login ou senha inválidos.')
+                return redirect(to='login')
+
+            auth.login(request, account)
+            return redirect(to='novo_evento')
+        except:
+            account = auth.authenticate(
+                request, username=userinput, password=senha)
+
+            if not account:
+                messages.error(
+                    request, message='login ou senha inválidos.')
+                return redirect(to='login')
+
+            auth.login(request, account)
+            return redirect(to='novo_evento')
+
+    else:
+        if request.user.is_authenticated:
+            return redirect(to='novo_evento')
+
+        return render(request, 'login.html')
