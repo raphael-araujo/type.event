@@ -101,3 +101,8 @@ def login(request):
             return redirect(to='novo_evento')
 
         return render(request, 'login.html')
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect(to='login')
