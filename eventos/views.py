@@ -51,3 +51,14 @@ def novo_evento(request):
             return request(to='novo_evento')
 
     return render(request, 'novo_evento.html')
+
+
+@login_required(login_url='login')
+def gerenciar_eventos(request): # TODO: Mostrar todos os eventos?
+    eventos = Evento.objects.filter(criador=request.user)
+
+    filtro_titulo = request.GET.get('titulo')
+    if filtro_titulo:
+        eventos = eventos.filter(nome__icontains=filtro_titulo)
+
+    return render(request, 'gerenciar_eventos.html', {'eventos': eventos})
