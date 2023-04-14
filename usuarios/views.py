@@ -61,7 +61,7 @@ def cadastro(request):
             return redirect(to='cadastro')
     else:
         if request.user.is_authenticated:
-            return redirect(to='novo_evento')
+            return redirect(to='gerenciar_eventos')
 
         return render(request, 'cadastro.html')
 
@@ -83,7 +83,7 @@ def login(request):
                 return redirect(to='login')
 
             auth.login(request, account)
-            return redirect(to='novo_evento')
+            return redirect(to='gerenciar_eventos')
         except:
             account = auth.authenticate(
                 request, username=userinput, password=senha)
@@ -94,11 +94,11 @@ def login(request):
                 return redirect(to='login')
 
             auth.login(request, account)
-            return redirect(to='novo_evento')
+            return redirect(to='gerenciar_eventos')
 
     else:
         if request.user.is_authenticated:
-            return redirect(to='novo_evento')
+            return redirect(to='gerenciar_eventos')
 
         return render(request, 'login.html')
 
