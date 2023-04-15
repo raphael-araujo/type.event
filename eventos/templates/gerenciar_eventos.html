@@ -1,6 +1,8 @@
 {% extends "base_evento.html" %}
 {% load static %}
 
+{% block 'title' %}Type.Event | Gerenciar eventos{% endblock  %}
+
 {% block 'importacoes' %}
     <link href="{% static 'eventos/css/gerenciar_eventos.css' %}" rel="stylesheet">
 {% endblock %}
@@ -10,7 +12,7 @@
         <br>
         <div class="row">
             <div class="col-md">
-                <form action="{% url 'gerenciar_eventos' %}" method="titulo">
+                <form action="{% url 'gerenciar_eventos' %}" method="GET">
                 <label>Título:</label>
                 <input type="text" placeholder="Filtrar por título" class="form-control" name="titulo">
             </div>
@@ -29,16 +31,19 @@
                 <th>Descrição</th>
                 <th>Início</th>
                 <th>Término</th>
-                <th>Link de inscrição</th>
             </tr>
             {% for evento in eventos %}
             <tr class="{% cycle 'linha' 'linha2' %}" align="center">
-                <td width="10%"><a href="#"><img width="100%" src="/media/{{evento.logo}}"></a></td>
+                <td width="10%"><img width="100%" src="/media/{{evento.logo}}"></td>
                 <td>{{ evento.nome }}</td>
                 <td>{{ evento.descricao|truncatechars:50 }}</td>
                 <td>{{ evento.data_inicio }}</td>
                 <td>{{ evento.data_termino }}</td>
-                <td>Link de inscrição</td>
+                <td>
+                    <a class="btn btn-primary" href="{% url 'inscricao' evento.slug %}" target="_blank">
+                        Detalhes
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </table>

@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 
 from .models import Evento
@@ -54,7 +54,7 @@ def novo_evento(request):
 
 
 @login_required(login_url='login')
-def gerenciar_eventos(request): # TODO: Mostrar todos os eventos?
+def gerenciar_eventos(request):
     eventos = Evento.objects.filter(criador=request.user)
 
     filtro_titulo = request.GET.get('titulo')
@@ -62,3 +62,20 @@ def gerenciar_eventos(request): # TODO: Mostrar todos os eventos?
         eventos = eventos.filter(nome__icontains=filtro_titulo)
 
     return render(request, 'gerenciar_eventos.html', {'eventos': eventos})
+
+
+@login_required(login_url='login')
+def inscricao(request, slug):
+    evento = get_object_or_404(Evento, slug=slug)
+
+    if request.method == 'POST':
+        if request.user in evento.participantes.all():
+            messages.error(request, message='Você já se inscreveu neste evento.')
+            return redirect(to='inscricao', slug=slug)
+
+        evento.participantes.add(request.user)
+        evento.save()
+        messages.success(request, message='Inscrição realizada com sucesso.')
+        return redirect(to='inscricao', slug=slug)
+    else:
+        return render(request, 'inscricao_evento.html', {'evento': evento})
