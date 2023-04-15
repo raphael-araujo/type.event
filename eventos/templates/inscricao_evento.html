@@ -35,11 +35,20 @@
                 <br>
                 <br>
                 {% if request.user in evento.participantes.all %}
-                    <input style="border-color: green;" type="submit" class="btn-principal" value="JÁ ESTÁ PARTICIPANDO" disabled>
+                    <input style="border-color: green;" type="submit" class="btn-principal" value="VOCÊ JÁ ESTÁ PARTICIPANDO DESTE EVENTO" disabled>
                 {% else%}
                     <form action="{% url 'inscricao' evento.slug %}" method="POST">{% csrf_token %}
                         <input type="submit" class="btn-principal" value="QUERO PARTICIPAR">
                     </form>
+                {% endif %}
+                <br>
+                <br>
+                {% if request.user == evento.criador %}
+                    <!-- &nbsp; &nbsp; -->
+                    <a style="border-color: blue; text-decoration: none;" class="btn-principal" href="{% url 'participantes_evento' evento.slug %}"
+                        target="_blank">
+                        VER PARTICIPANTES INSCRITOS
+                    </a>
                 {% endif %}
             </div>
         </div>
