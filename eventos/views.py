@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 
@@ -79,3 +80,20 @@ def inscricao(request, slug):
         return redirect(to='inscricao', slug=slug)
     else:
         return render(request, 'inscricao_evento.html', {'evento': evento})
+
+
+@login_required(login_url='login')
+def participantes_evento(request, slug):
+    evento = get_object_or_404(Evento, slug=slug)
+    participantes = evento.participantes.all()
+    
+    if evento.criador != request.user:
+        raise Http404('Esse evento não é seu.')
+    
+    context = {
+        'evento': evento,
+        'participantes': participantes,
+        'num_participantes': participantes[:5]
+    }
+
+    return render(request, 'participantes_evento.html', context)
