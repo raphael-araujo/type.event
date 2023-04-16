@@ -9,7 +9,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 
-from .models import Evento
+from .models import Certificado, Evento
 from .utils import evento_is_valid
 
 
@@ -123,3 +123,21 @@ def exportar_csv(request, slug):
             writer.writerow(x)
 
     return redirect(f'/media/{token}')
+
+
+@login_required(login_url='login')
+def certificados_evento(request, slug):
+    evento = get_object_or_404(Evento, slug=slug)
+
+    if evento.criador != request.user:
+        raise Http404('Esse evento não é seu.')
+
+    quantidade_certificados = evento.participantes.all().count(
+    ) - Certificado.objects.filter(evento=evento).count()
+
+    context = {
+        'evento': evento,
+        'quantidade_certificados': quantidade_certificados
+    }
+
+    return render(request, 'certificados_evento.html', context)
