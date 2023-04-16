@@ -1,3 +1,8 @@
+import csv
+import os
+from secrets import token_urlsafe
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -86,10 +91,10 @@ def inscricao(request, slug):
 def participantes_evento(request, slug):
     evento = get_object_or_404(Evento, slug=slug)
     participantes = evento.participantes.all()
-    
+
     if evento.criador != request.user:
         raise Http404('Esse evento não é seu.')
-    
+
     context = {
         'evento': evento,
         'participantes': participantes,
@@ -97,3 +102,24 @@ def participantes_evento(request, slug):
     }
 
     return render(request, 'participantes_evento.html', context)
+
+
+@login_required(login_url='login')
+def exportar_csv(request, slug):
+    evento = get_object_or_404(Evento, slug=slug)
+
+    if evento.criador != request.user:
+        raise Http404('Esse evento não é seu.')
+
+    participantes = evento.participantes.all()
+
+    token = f'{token_urlsafe(6)}.csv'
+    path = os.path.join(settings.MEDIA_ROOT, token)
+
+    with open(path, 'w') as arq:
+        writer = csv.writer(arq, delimiter=",")
+        for participante in participantes:
+            x = (participante.username, participante.email)
+            writer.writerow(x)
+
+    return redirect(f'/media/{token}')
