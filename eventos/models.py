@@ -24,3 +24,9 @@ class Evento(models.Model):
 
     def __str__(self):
         return self.nome
+
+
+class Certificado(models.Model):
+    template = models.ImageField(upload_to='certificados')
+    partipante = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    evento = models.ForeignKey(Evento, on_delete=models.DO_NOTHING)
