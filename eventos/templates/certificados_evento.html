@@ -3,8 +3,6 @@
 
 {% block 'title' %}Type.Event | Certificados do evento {{ evento.nome }}{% endblock  %}
 
-
-
 {% block 'importacoes' %}
     <link href="{% static 'evento/css/gerenciar_evento.css' %}" rel="stylesheet">
 {% endblock %}
@@ -14,7 +12,7 @@
         <br>
         {% if messages %}
             {% for message in messages %}
-                <div class="alert {{ message.tags }}">{{ message }}</div>
+                <div class="alert {{ message.tags }}" align="center">{{ message }}</div>
             {% endfor %}
         {% endif %}
         <br>
@@ -52,19 +50,15 @@
             <hr>
         {% endif %}
 
-
         <div class="row">
             <h5>Procurar certificado</h5>
             <br>
-            <form action="{% url 'certificados_evento' evento.slug %}" method="GET">
-                <input type="email" class="form-control" placeholder="Digite o e-mail" name="email" style="width: 40%">
+            <form action="{% url 'procurar_certificado' evento.slug %}" method="POST">
                 {% csrf_token %}
+                <input type="email" class="form-control" placeholder="Digite o e-mail" name="email" style="width: 40%" required>
                 <br>
                 <input type="submit" value="BUSCAR" class="btn btn-primary">
             </form>
         </div>
-        
-        
     </div>
-
 {% endblock %}

@@ -11,4 +11,5 @@ urlpatterns = [
     path('exportar_csv/<slug:slug>/', views.exportar_csv, name='exportar_csv'),
     path('certificados_evento/<slug:slug>/', views.certificados_evento, name='certificados_evento'),
     path('gerar_certificado/<slug:slug>/', views.gerar_certificado, name='gerar_certificado'),
+    path('procurar_certificado/<slug:slug>/', views.procurar_certificado, name='procurar_certificado'),
 ]
