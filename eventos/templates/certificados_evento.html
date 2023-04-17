@@ -44,7 +44,7 @@
             <div class="row">
                 <h5>{{quantidade_certificados}} Certificado{{quantidade_certificados|pluralize}} para geração</h5>
                 &nbsp;&nbsp;&nbsp;
-                <a href="#" class="btn-principal link" style="width: 25%">GERAR TODOS OS CERTIFICADOS</a>
+                <a href="{% url 'gerar_certificado' evento.slug %}" class="btn-principal link" style="width: 25%">GERAR TODOS OS CERTIFICADOS</a>
             </div>
             <hr>
         {% else %}

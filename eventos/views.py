@@ -1,13 +1,17 @@
 import csv
 import os
+import sys
+from io import BytesIO
 from secrets import token_urlsafe
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
+from PIL import Image, ImageDraw, ImageFont
 
 from .models import Certificado, Evento
 from .utils import evento_is_valid
@@ -141,3 +145,52 @@ def certificados_evento(request, slug):
     }
 
     return render(request, 'certificados_evento.html', context)
+
+
+@login_required(login_url='login')
+def gerar_certificado(request, slug):
+    evento = get_object_or_404(Evento, slug=slug)
+
+    if evento.criador != request.user:
+        raise Http404('Esse evento não é seu.')
+
+    path_template = os.path.join(
+        settings.BASE_DIR, 'templates/static/eventos/img/template_certificado.png')
+    path_fonte = os.path.join(
+        settings.BASE_DIR, 'templates/static/eventos/fonts/arimo.ttf')
+    for participante in evento.participantes.all():
+        img = Image.open(path_template)
+        draw = ImageDraw.Draw(img)
+        fonte_nome = ImageFont.truetype(path_fonte, 60)
+        fonte_info = ImageFont.truetype(path_fonte, 30)
+        draw.text((230, 651), f"{participante.username}",
+                  font=fonte_nome, fill=(0, 0, 0))
+        draw.text((761, 782), f"{evento.nome}",
+                  font=fonte_info, fill=(0, 0, 0))
+        draw.text((816, 849), f"{evento.carga_horaria} horas",
+                  font=fonte_info, fill=(0, 0, 0))
+        output = BytesIO()
+        img.save(output, format="PNG", quality=100)
+        output.seek(0)
+        img_final = InMemoryUploadedFile(
+            output,
+            'ImageField',
+            f'{token_urlsafe(8)}.png',
+            'image/jpeg',
+            sys.getsizeof(output),
+            None
+        )
+        try:
+            if not Certificado.objects.filter(participante=participante).exists():
+                certificado_gerado = Certificado(
+                    template=img_final,
+                    participante=participante,
+                    evento=evento,
+                )
+                certificado_gerado.save()
+        except:
+            messages.error(request, message='Erro ao gerar certificados.')
+            return redirect(to='certificados_evento', slug=slug)
+
+    messages.success(request, message='Certificados gerados com sucesso')
+    return redirect(to='certificados_evento', slug=slug)
