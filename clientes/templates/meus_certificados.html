@@ -1,0 +1,16 @@
+{% extends "base_evento.html" %}
+
+
+{% block 'conteudo' %}
+    <div class="container">
+        <br>
+        <br>
+        <div class="row">
+            {% for certificado in certificados %}
+                <div class="col-md-4">
+                    <img src="{{certificado.template.url}}" width="100%">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
