@@ -28,5 +28,8 @@ class Evento(models.Model):
 
 class Certificado(models.Model):
     template = models.ImageField(upload_to='certificados')
-    partipante = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    participante = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     evento = models.ForeignKey(Evento, on_delete=models.DO_NOTHING)
+
+    def __str__(self) -> str:
+        return f'{self.participante.username} - {self.participante.email}'
