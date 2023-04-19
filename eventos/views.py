@@ -181,7 +181,7 @@ def gerar_certificado(request, slug):
             None
         )
         try:
-            if not Certificado.objects.filter(participante=participante).exists():
+            if not Certificado.objects.filter(participante=participante).filter(evento=evento).exists():
                 certificado_gerado = Certificado(
                     template=img_final,
                     participante=participante,
