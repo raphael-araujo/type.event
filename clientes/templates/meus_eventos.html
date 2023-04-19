@@ -1,0 +1,59 @@
+{% extends "base_evento.html" %}
+{% load static %}
+
+{% block 'title' %}Type.Event | Meus Eventos{% endblock  %}
+
+{% block 'importacoes' %}
+    <link href="{% static 'eventos/css/gerenciar_eventos.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block 'conteudo' %}
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-md">
+                <form action="{% url 'meus_eventos' %}" method="GET">
+                <label>Título:</label>
+                <input type="text" placeholder="Filtrar por título" class="form-control" name="titulo">
+            </div>
+            <div class="col-md">
+                <br>
+                <input type="submit" class="btn-principal" value="FILTRAR">
+                </form>
+            </div>
+        </div>
+        {% if eventos %}
+        <table>
+            <tr align="center">
+                <th>Logo</th>
+                <th>Título</th>
+                <th>Descrição</th>
+                <th>Início</th>
+                <th>Término</th>
+            </tr>
+            {% for evento in eventos %}
+                <tr class="{% cycle 'linha' 'linha2' %}" align="center">
+                    <td width="10%"><img width="100%" src="{{evento.logo.url}}"></td>
+                    <td>{{ evento.nome }}</td>
+                    <td>{{ evento.descricao|truncatechars:50 }}</td>
+                    <td>{{ evento.data_inicio }}</td>
+                    <td>{{ evento.data_termino }}</td>
+                    <td>
+                    {% for certificado in certificados %}
+                        {% if certificado.evento == evento %}
+                            <a class="btn btn-primary" href="{{ certificado.template.url }}" target="_blank">
+                                Ver certificado
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <br>
+            <br>
+            <p>Nenhum evento encontrado.</p>
+        {% endif %}
+    </div>
+{% endblock %}
