@@ -74,11 +74,12 @@ class EventoModelTest(TestCase):
 
 
 class CertificadoTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create(
             username='testuser', email='testuser@example.com')
-        self.evento = Evento.objects.create(
-            criador=self.user,
+        cls.evento = Evento.objects.create(
+            criador=cls.user,
             nome='Teste Evento',
             slug='teste-evento',
             descricao='This is a teste evento',
@@ -89,10 +90,10 @@ class CertificadoTestCase(TestCase):
             cor_secundaria='#000000',
             cor_fundo='#cccccc'
         )
-        self.certificado = Certificado.objects.create(
+        cls.certificado = Certificado.objects.create(
             template='certificados/teste.jpg',
-            participante=self.user,
-            evento=self.evento
+            participante=cls.user,
+            evento=cls.evento
         )
 
     def test_create_certificado(self):

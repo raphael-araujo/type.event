@@ -4,8 +4,9 @@ from django.urls import reverse
 
 
 class CadastroViewTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
             username='testuser', password='Newpass123', email='test@example.com')
 
     def test_status_code_200(self):
@@ -85,8 +86,9 @@ class CadastroViewTestCase(TestCase):
 
 
 class LoginViewTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
             username='raphael', email='raphael@mail.com', password='password123')
 
     def test_status_code_200(self):
@@ -136,8 +138,9 @@ class LoginViewTestCase(TestCase):
 
 
 class LogoutViewTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
             username='raphael', password='password123')
 
     def test_logout(self):
