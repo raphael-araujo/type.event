@@ -8,7 +8,6 @@ from eventos.models import Certificado, Evento
 def meus_eventos(request):
     eventos = Evento.objects.filter(participantes__username=request.user)
     certificados = Certificado.objects.filter(participante=request.user)
-    print(certificados)
     filtro_titulo= request.GET.get('titulo')
 
     if filtro_titulo:
